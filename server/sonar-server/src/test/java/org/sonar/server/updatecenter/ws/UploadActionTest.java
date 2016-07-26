@@ -37,7 +37,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.sonar.server.exceptions.ForbiddenException;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 import org.sonar.server.tester.UserSessionRule;
 import org.sonar.server.ws.TestResponse;
 import org.sonar.server.ws.WsActionTester;
@@ -55,7 +55,7 @@ public class UploadActionTest {
   @Rule
   public UserSessionRule userSession = UserSessionRule.standalone();
 
-  DefaultServerFileSystem fileSystem = mock(DefaultServerFileSystem.class);
+  ServerFileSystemImpl fileSystem = mock(ServerFileSystemImpl.class);
   File pluginDirectory;
 
   File plugin = new File(getClass().getResource("UploadActionTest/plugin.jar").getFile());

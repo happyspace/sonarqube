@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.sonar.core.platform.PluginInfo;
 import org.sonar.core.platform.ExplodedPlugin;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 
 import java.io.File;
 
@@ -37,7 +37,7 @@ public class ServerPluginJarExploderTest {
   @Rule
   public TemporaryFolder temp = new TemporaryFolder();
 
-  DefaultServerFileSystem fs = mock(DefaultServerFileSystem.class);
+  ServerFileSystemImpl fs = mock(ServerFileSystemImpl.class);
   ServerPluginJarExploder underTest = new ServerPluginJarExploder(fs);
 
   @Test

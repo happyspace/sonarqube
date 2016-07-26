@@ -32,7 +32,7 @@ import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.server.ws.WebService;
 import org.sonar.core.permission.GlobalPermissions;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 import org.sonar.server.user.UserSession;
 
 public class UploadAction implements UpdateCenterWsAction {
@@ -42,7 +42,7 @@ public class UploadAction implements UpdateCenterWsAction {
   private final UserSession userSession;
   private final File downloadDir;
 
-  public UploadAction(UserSession userSession, DefaultServerFileSystem fileSystem) {
+  public UploadAction(UserSession userSession, ServerFileSystemImpl fileSystem) {
     this.userSession = userSession;
     this.downloadDir = fileSystem.getDownloadedPluginsDir();
   }

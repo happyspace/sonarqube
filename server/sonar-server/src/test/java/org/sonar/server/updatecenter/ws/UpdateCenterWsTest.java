@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.server.ws.RailsHandler;
 import org.sonar.api.server.ws.WebService;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 import org.sonar.server.ws.WsTester;
 
 public class UpdateCenterWsTest {
@@ -36,7 +36,7 @@ public class UpdateCenterWsTest {
   @Before
   public void setUp() {
     tester = new WsTester(new UpdateCenterWs(
-      new UploadAction(null, mock(DefaultServerFileSystem.class))));
+      new UploadAction(null, mock(ServerFileSystemImpl.class))));
   }
 
   @Test

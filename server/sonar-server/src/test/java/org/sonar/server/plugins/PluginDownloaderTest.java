@@ -35,7 +35,7 @@ import org.sonar.api.utils.HttpDownloader;
 import org.sonar.api.utils.SonarException;
 import org.sonar.core.platform.PluginInfo;
 import org.sonar.server.exceptions.BadRequestException;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 import org.sonar.updatecenter.common.Plugin;
 import org.sonar.updatecenter.common.Release;
 import org.sonar.updatecenter.common.UpdateCenter;
@@ -86,7 +86,7 @@ public class PluginDownloaderTest {
       }
     }).when(httpDownloader).download(any(URI.class), any(File.class));
 
-    DefaultServerFileSystem defaultServerFileSystem = mock(DefaultServerFileSystem.class);
+    ServerFileSystemImpl defaultServerFileSystem = mock(ServerFileSystemImpl.class);
     downloadDir = testFolder.newFolder("downloads");
     when(defaultServerFileSystem.getDownloadedPluginsDir()).thenReturn(downloadDir);
 
@@ -163,7 +163,7 @@ public class PluginDownloaderTest {
 
   @Test
   public void throw_exception_if_download_dir_is_invalid() throws Exception {
-    DefaultServerFileSystem defaultServerFileSystem = mock(DefaultServerFileSystem.class);
+    ServerFileSystemImpl defaultServerFileSystem = mock(ServerFileSystemImpl.class);
     // download dir is a file instead of being a directory
     File downloadDir = testFolder.newFile();
     when(defaultServerFileSystem.getDownloadedPluginsDir()).thenReturn(downloadDir);

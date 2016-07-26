@@ -26,7 +26,7 @@ import org.sonar.api.server.ServerSide;
 import org.sonar.core.platform.PluginInfo;
 import org.sonar.core.platform.PluginRepository;
 import org.sonar.core.platform.RemotePlugin;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,10 +38,10 @@ import java.nio.charset.StandardCharsets;
 @ServerSide
 public final class GeneratePluginIndex {
 
-  private DefaultServerFileSystem fileSystem;
+  private ServerFileSystemImpl fileSystem;
   private PluginRepository repository;
 
-  public GeneratePluginIndex(DefaultServerFileSystem fileSystem, PluginRepository repository) {
+  public GeneratePluginIndex(ServerFileSystemImpl fileSystem, PluginRepository repository) {
     this.fileSystem = fileSystem;
     this.repository = repository;
   }

@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.sonar.core.platform.PluginInfo;
 import org.sonar.core.platform.PluginRepository;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,12 +44,12 @@ public class GeneratePluginIndexTest {
   @Rule
   public TemporaryFolder temp = new TemporaryFolder();
 
-  DefaultServerFileSystem fileSystem;
+  ServerFileSystemImpl fileSystem;
   File index;
 
   @Before
   public void createIndexFile() {
-    fileSystem = mock(DefaultServerFileSystem.class);
+    fileSystem = mock(ServerFileSystemImpl.class);
     index = new File("target/test-tmp/GeneratePluginIndexTest/plugins.txt");
     when(fileSystem.getPluginIndex()).thenReturn(index);
   }

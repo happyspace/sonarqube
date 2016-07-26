@@ -97,7 +97,7 @@ import org.sonar.server.notification.NotificationService;
 import org.sonar.server.notification.email.AlertsEmailTemplate;
 import org.sonar.server.notification.email.EmailNotificationChannel;
 import org.sonar.server.platform.DatabaseServerCompatibility;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 import org.sonar.server.platform.DefaultServerUpgradeStatus;
 import org.sonar.server.platform.PersistentSettings;
 import org.sonar.server.platform.ServerImpl;
@@ -149,7 +149,7 @@ public class ComputeEngineContainerImpl implements ComputeEngineContainer {
     DatabaseServerCompatibility.class,
     DatabaseVersion.class,
     PurgeProfiler.class,
-    DefaultServerFileSystem.class,
+    ServerFileSystemImpl.class,
     // no TempFolderCleaner.class, responsibility of Web Server
     new TempFolderProvider(),
     System2.INSTANCE,

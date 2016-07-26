@@ -41,7 +41,7 @@ import org.sonar.server.app.RestartFlagHolderImpl;
 import org.sonar.server.db.EmbeddedDatabaseFactory;
 import org.sonar.server.issue.index.IssueIndex;
 import org.sonar.server.platform.DatabaseServerCompatibility;
-import org.sonar.server.platform.DefaultServerFileSystem;
+import org.sonar.server.platform.ServerFileSystemImpl;
 import org.sonar.server.platform.Platform;
 import org.sonar.server.platform.ServerImpl;
 import org.sonar.server.platform.ServerSettingsImpl;
@@ -85,7 +85,7 @@ public class PlatformLevel1 extends PlatformLevel {
       DatabaseServerCompatibility.class,
       DatabaseVersion.class,
       PurgeProfiler.class,
-      DefaultServerFileSystem.class,
+      ServerFileSystemImpl.class,
       SemaphoresImpl.class,
       TempFolderCleaner.class,
       new TempFolderProvider(),

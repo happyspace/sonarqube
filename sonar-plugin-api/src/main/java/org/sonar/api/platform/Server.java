@@ -40,8 +40,17 @@ public abstract class Server {
 
   public abstract Date getStartedAt();
 
+  /**
+   * @deprecated in 6.0. Replaced by {@link ServerFileSystem#getHomeDir()}
+   * @return an existing directory in server and CE environments, {@code null} in scanner.
+   */
+  @Deprecated
   public abstract File getRootDir();
 
+  /**
+   * @deprecated always {@code null} since version 6.0. No alternatives, as plugins do not have to touch this directory.
+   */
+  @Deprecated
   @CheckForNull
   public abstract File getDeployDir();
 
