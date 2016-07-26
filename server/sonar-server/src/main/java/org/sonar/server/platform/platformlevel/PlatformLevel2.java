@@ -26,11 +26,11 @@ import org.sonar.core.platform.PluginClassloaderFactory;
 import org.sonar.core.platform.PluginLoader;
 import org.sonar.db.charset.DatabaseCharsetChecker;
 import org.sonar.db.version.MigrationStepModule;
+import org.sonar.server.platform.DefaultServerUpgradeStatus;
 import org.sonar.server.platform.db.CheckDatabaseCharsetAtStartup;
 import org.sonar.server.platform.db.migrations.DatabaseMigrator;
 import org.sonar.server.platform.db.migrations.PlatformDatabaseMigration;
 import org.sonar.server.platform.db.migrations.PlatformDatabaseMigrationExecutorServiceImpl;
-import org.sonar.server.platform.DefaultServerUpgradeStatus;
 import org.sonar.server.platform.web.RailsAppsDeployer;
 import org.sonar.server.plugins.InstalledPluginReferentialFactory;
 import org.sonar.server.plugins.ServerPluginJarExploder;
@@ -48,9 +48,6 @@ public class PlatformLevel2 extends PlatformLevel {
   protected void configureLevel() {
     add(
       DefaultServerUpgradeStatus.class,
-      DatabaseMigrator.class,
-      DatabaseCharsetChecker.class,
-      CheckDatabaseCharsetAtStartup.class,
 
       // depends on Ruby
       PlatformRubyBridge.class,
@@ -73,6 +70,11 @@ public class PlatformLevel2 extends PlatformLevel {
       // DB migration
       PlatformDatabaseMigrationExecutorServiceImpl.class,
       PlatformDatabaseMigration.class,
+      DatabaseMigrator.class,
       MigrationStepModule.class);
+
+    addIfStartupLeader(
+      DatabaseCharsetChecker.class,
+      CheckDatabaseCharsetAtStartup.class);
   }
 }

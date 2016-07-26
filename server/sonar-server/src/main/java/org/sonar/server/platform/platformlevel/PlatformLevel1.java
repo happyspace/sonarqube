@@ -38,6 +38,8 @@ import org.sonar.db.semaphore.SemaphoresImpl;
 import org.sonar.db.version.DatabaseVersion;
 import org.sonar.server.app.ProcessCommandWrapperImpl;
 import org.sonar.server.app.RestartFlagHolderImpl;
+import org.sonar.server.platform.cluster.ClusterImpl;
+import org.sonar.server.platform.cluster.ClusterProperties;
 import org.sonar.server.platform.db.EmbeddedDatabaseFactory;
 import org.sonar.server.issue.index.IssueIndex;
 import org.sonar.server.platform.DatabaseServerCompatibility;
@@ -115,6 +117,10 @@ public class PlatformLevel1 extends PlatformLevel {
       org.sonar.core.properties.PropertiesDao.class);
     addAll(CorePropertyDefinitions.all());
     addAll(CePropertyDefinitions.all());
+
+    // cluster
+    addAll(ClusterProperties.definitions());
+    add(ClusterImpl.class);
   }
 
   private void addExtraRootComponents() {
