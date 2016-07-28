@@ -17,17 +17,41 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
 package org.sonarqube.ws.client.qualitygate;
 
-public class QualityGatesWsParameters {
-  public static final String PARAM_ANALYSIS_ID = "analysisId";
-  public static final String PARAM_PROJECT_ID = "projectId";
-  public static final String PARAM_PROJECT_KEY = "projectKey";
-  public static final String PARAM_GATE_ID = "gateId";
+import javax.annotation.CheckForNull;
 
-  private QualityGatesWsParameters() {
-    // prevent instantiation
+public class SelectWsRequest {
+  private long gateId;
+  private Long projectId;
+  private String projectKey;
+
+  public long getGateId() {
+    return gateId;
   }
 
+  public SelectWsRequest setGateId(long gateId) {
+    this.gateId = gateId;
+    return this;
+  }
+
+  @CheckForNull
+  public Long getProjectId() {
+    return projectId;
+  }
+
+  public SelectWsRequest setProjectId(Long projectId) {
+    this.projectId = projectId;
+    return this;
+  }
+
+  @CheckForNull
+  public String getProjectKey() {
+    return projectKey;
+  }
+
+  public SelectWsRequest setProjectKey(String projectKey) {
+    this.projectKey = projectKey;
+    return this;
+  }
 }

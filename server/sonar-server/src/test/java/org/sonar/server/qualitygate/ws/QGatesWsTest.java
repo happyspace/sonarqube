@@ -21,6 +21,7 @@ package org.sonar.server.qualitygate.ws;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,17 +30,18 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.sonar.api.server.ws.WebService.Action;
 import org.sonar.api.server.ws.WebService.Controller;
+import org.sonar.db.DbClient;
 import org.sonar.db.qualitygate.ProjectQgateAssociation;
 import org.sonar.db.qualitygate.ProjectQgateAssociationQuery;
 import org.sonar.db.qualitygate.QualityGateConditionDto;
 import org.sonar.db.qualitygate.QualityGateDto;
+import org.sonar.server.component.ComponentFinder;
 import org.sonar.server.exceptions.BadRequestException;
 import org.sonar.server.qualitygate.QgateProjectFinder;
 import org.sonar.server.qualitygate.QgateProjectFinder.Association;
 import org.sonar.server.qualitygate.QualityGates;
+import org.sonar.server.tester.UserSessionRule;
 import org.sonar.server.ws.WsTester;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -64,12 +66,14 @@ public class QGatesWsTest {
 
   @Before
   public void setUp() {
+    SelectAction selectAction = new SelectAction(mock(DbClient.class), mock(UserSessionRule.class), mock(ComponentFinder.class));
+
     tester = new WsTester(new QGatesWs(
       new ListAction(qGates), new ShowAction(qGates), new SearchAction(projectFinder),
       new CreateAction(qGates), new CopyAction(qGates), new DestroyAction(qGates), new RenameAction(qGates),
       new SetAsDefaultAction(qGates), new UnsetDefaultAction(qGates),
       new CreateConditionAction(qGates), new UpdateConditionAction(qGates), new DeleteConditionAction(qGates),
-      new SelectAction(qGates), new DeselectAction(qGates), new AppAction(qGates)));
+      selectAction, new DeselectAction(qGates), new AppAction(qGates)));
   }
 
   @Test
@@ -258,7 +262,7 @@ public class QGatesWsTest {
       new QualityGateDto().setId(42L).setName("Golden"),
       new QualityGateDto().setId(43L).setName("Star"),
       new QualityGateDto().setId(666L).setName("Ninth")
-      ));
+    ));
     when(qGates.currentUserHasWritePermission()).thenReturn(false);
     tester.newGetRequest("api/qualitygates", "list").execute().assertJson(
       "{\"qualitygates\":[{\"id\":42,\"name\":\"Golden\"},{\"id\":43,\"name\":\"Star\"},{\"id\":666,\"name\":\"Ninth\"}]}");
@@ -271,7 +275,7 @@ public class QGatesWsTest {
       defaultQgate,
       new QualityGateDto().setId(43L).setName("Star"),
       new QualityGateDto().setId(666L).setName("Ninth")
-      ));
+    ));
     when(qGates.getDefault()).thenReturn(defaultQgate);
     tester.newGetRequest("api/qualitygates", "list").execute().assertJson(
       "{\"qualitygates\":[{\"id\":42,\"name\":\"Golden\"},{\"id\":43,\"name\":\"Star\"},{\"id\":666,\"name\":\"Ninth\"}],\"default\":42}");
@@ -292,13 +296,13 @@ public class QGatesWsTest {
     when(qGates.listConditions(gateId)).thenReturn(ImmutableList.of(
       new QualityGateConditionDto().setId(1L).setMetricKey("ncloc").setOperator("GT").setErrorThreshold("10000"),
       new QualityGateConditionDto().setId(2L).setMetricKey("new_coverage").setOperator("LT").setWarningThreshold("90").setPeriod(3)
-      ));
+    ));
     tester.newGetRequest("api/qualitygates", "show").setParam("id", Long.toString(gateId)).execute().assertJson(
       "{\"id\":12345,\"name\":\"Golden\",\"conditions\":["
         + "{\"id\":1,\"metric\":\"ncloc\",\"op\":\"GT\",\"error\":\"10000\"},"
         + "{\"id\":2,\"metric\":\"new_coverage\",\"op\":\"LT\",\"warning\":\"90\",\"period\":3}"
         + "]}"
-      );
+    );
   }
 
   @Test
@@ -309,13 +313,13 @@ public class QGatesWsTest {
     when(qGates.listConditions(qGateId)).thenReturn(ImmutableList.of(
       new QualityGateConditionDto().setId(1L).setMetricKey("ncloc").setOperator("GT").setErrorThreshold("10000"),
       new QualityGateConditionDto().setId(2L).setMetricKey("new_coverage").setOperator("LT").setWarningThreshold("90").setPeriod(3)
-      ));
+    ));
     tester.newGetRequest("api/qualitygates", "show").setParam("name", gateName).execute().assertJson(
       "{\"id\":12345,\"name\":\"Golden\",\"conditions\":["
         + "{\"id\":1,\"metric\":\"ncloc\",\"op\":\"GT\",\"error\":\"10000\"},"
         + "{\"id\":2,\"metric\":\"new_coverage\",\"op\":\"LT\",\"warning\":\"90\",\"period\":3}"
         + "]}"
-      );
+    );
   }
 
   @Test(expected = BadRequestException.class)
@@ -385,7 +389,7 @@ public class QGatesWsTest {
     List<ProjectQgateAssociation> projects = ImmutableList.of(
       new ProjectQgateAssociation().setId(42L).setName("Project One").setMember(false),
       new ProjectQgateAssociation().setId(24L).setName("Project Two").setMember(true)
-      );
+    );
     when(assoc.projects()).thenReturn(projects);
     when(projectFinder.find(any(ProjectQgateAssociationQuery.class))).thenReturn(assoc);
 
@@ -410,7 +414,7 @@ public class QGatesWsTest {
     when(assoc.hasMoreResults()).thenReturn(true);
     List<ProjectQgateAssociation> projects = ImmutableList.of(
       new ProjectQgateAssociation().setId(24L).setName("Project Two").setMember(true)
-      );
+    );
     when(assoc.projects()).thenReturn(projects);
     when(projectFinder.find(any(ProjectQgateAssociationQuery.class))).thenReturn(assoc);
 
@@ -424,18 +428,6 @@ public class QGatesWsTest {
     verify(projectFinder).find(queryCaptor.capture());
     ProjectQgateAssociationQuery query = queryCaptor.getValue();
     assertThat(query.membership()).isEqualTo(ProjectQgateAssociationQuery.IN);
-  }
-
-  @Test
-  public void select_nominal() throws Exception {
-    long gateId = 42L;
-    long projectId = 666L;
-    tester.newPostRequest("api/qualitygates", "select")
-      .setParam("gateId", Long.toString(gateId))
-      .setParam("projectId", Long.toString(projectId))
-      .execute()
-      .assertNoContent();
-    verify(qGates).associateProject(gateId, projectId);
   }
 
   @Test

@@ -56,12 +56,27 @@ public class ComponentFinder {
     return getByKey(dbSession, componentKey);
   }
 
+  public ComponentDto getByIdOrKey(DbSession dbSession, @Nullable Long componentId, @Nullable String componentKey, ParamNames parameterNames) {
+    checkArgument(componentId != null ^ componentKey != null, MSG_COMPONENT_ID_OR_KEY_TEMPLATE, parameterNames.getUuidParam(), parameterNames.getKeyParam());
+
+    if (componentId != null) {
+      return getById(dbSession, componentId);
+    }
+
+    checkArgument(!componentKey.isEmpty(), "The '%s' parameter must not be empty", parameterNames.getKeyParam());
+    return getByKey(dbSession, componentKey);
+  }
+
   public ComponentDto getByKey(DbSession dbSession, String key) {
     return getIfPresentOrFail(dbClient.componentDao().selectByKey(dbSession, key), format("Component key '%s' not found", key));
   }
 
   public ComponentDto getByUuid(DbSession dbSession, String uuid) {
     return getIfPresentOrFail(dbClient.componentDao().selectByUuid(dbSession, uuid), format("Component id '%s' not found", uuid));
+  }
+
+  public ComponentDto getById(DbSession dbSession, long id) {
+    return getIfPresentOrFail(dbClient.componentDao().selectById(dbSession, id), format("Component id '%s' not found", id));
   }
 
   /**
